@@ -1,0 +1,278 @@
+
+USE `db_fiesphack` ;
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_acesso`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_acesso` (
+  `id_acesso` INT NOT NULL AUTO_INCREMENT,
+  `nome_acesso` VARCHAR(45) NULL,
+  PRIMARY KEY (`id_acesso`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_usuarios_acesso`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_usuarios_acesso` (
+  `id_usuario` INT NOT NULL AUTO_INCREMENT,
+  `CPF` VARCHAR(45) NULL,
+  `senha` VARCHAR(45) NULL,
+  `id_acesso` INT NULL,
+  PRIMARY KEY (`id_usuario`),
+  INDEX `fk_id_acesso_idx` (`id_acesso` ASC),
+  CONSTRAINT `fk_id_acesso`
+    FOREIGN KEY (`id_acesso`)
+    REFERENCES `db_fiesphack`.`tbl_acesso` (`id_acesso`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_hospitais`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_hospitais` (
+  `id_hospital` INT NOT NULL,
+  PRIMARY KEY (`id_hospital`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_especialidades`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_especialidades` (
+  `id_especialidade` INT NOT NULL AUTO_INCREMENT,
+  `nome_especialidade` VARCHAR(45) NULL,
+  PRIMARY KEY (`id_especialidade`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_especialidades_hospitais`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_especialidades_hospitais` (
+  `id_especialidade_hospital` INT NOT NULL AUTO_INCREMENT,
+  `id_hospital` INT NULL,
+  `id_especialidade` INT NULL,
+  PRIMARY KEY (`id_especialidade_hospital`),
+  INDEX `fk_id_especialidade_idx` (`id_especialidade` ASC),
+  INDEX `fk_id_hospital_idx` (`id_hospital` ASC),
+  CONSTRAINT `fk_id_especialidade`
+    FOREIGN KEY (`id_especialidade`)
+    REFERENCES `db_fiesphack`.`tbl_especialidades` (`id_especialidade`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_id_hospital`
+    FOREIGN KEY (`id_hospital`)
+    REFERENCES `db_fiesphack`.`tbl_hospitais` (`id_hospital`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_leitos`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_leitos` (
+  `id_leitos` INT NOT NULL AUTO_INCREMENT,
+  `nome_leito` VARCHAR(45) NULL,
+  PRIMARY KEY (`id_leitos`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_leito_hospital`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_leito_hospital` (
+  `id_leito_hospital` INT NOT NULL AUTO_INCREMENT,
+  `id_leito` INT NULL,
+  `id_hospital` INT NULL,
+  `qtd_total` VARCHAR(45) NULL,
+  `qtd_ocupado` VARCHAR(45) NULL,
+  `disponivel` INT NULL,
+  PRIMARY KEY (`id_leito_hospital`),
+  INDEX `fk_id_leito_idx` (`id_leito` ASC),
+  INDEX `fk_id_leito_hospital_idx` (`id_hospital` ASC),
+  CONSTRAINT `fk_id_leito`
+    FOREIGN KEY (`id_leito`)
+    REFERENCES `db_fiesphack`.`tbl_leitos` (`id_leitos`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_id_leito_hospital`
+    FOREIGN KEY (`id_hospital`)
+    REFERENCES `db_fiesphack`.`tbl_hospitais` (`id_hospital`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_medicos_hospitais`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_medicos_hospitais` (
+  `id_medicos_hospitais` INT NOT NULL AUTO_INCREMENT,
+  `nome_medico` VARCHAR(45) NULL,
+  `disponivel` TINYINT NULL,
+  PRIMARY KEY (`id_medicos_hospitais`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_especialidades_medicos_hospitais`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_especialidades_medicos_hospitais` (
+  `id_especialidades_medicos_hospitais` INT NOT NULL AUTO_INCREMENT,
+  `id_especialidade` INT NULL,
+  `id_medico` INT NULL,
+  PRIMARY KEY (`id_especialidades_medicos_hospitais`),
+  INDEX `fk_id_especialides_medicos_hospitais_espe_idx` (`id_especialidade` ASC),
+  INDEX `fk_id_especialides_medicos_hospitais_med_idx` (`id_medico` ASC),
+  CONSTRAINT `fk_id_especialides_medicos_hospitais_espe`
+    FOREIGN KEY (`id_especialidade`)
+    REFERENCES `db_fiesphack`.`tbl_especialidades` (`id_especialidade`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_id_especialides_medicos_hospitais_med`
+    FOREIGN KEY (`id_medico`)
+    REFERENCES `db_fiesphack`.`tbl_medicos_hospitais` (`id_medicos_hospitais`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_gravidade`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_gravidade` (
+  `id_gravidade` INT NOT NULL AUTO_INCREMENT,
+  `nome_gravidade` VARCHAR(45) NULL,
+  PRIMARY KEY (`id_gravidade`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_pedidos_emergencias`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_pedidos_emergencias` (
+  `id_pedidos_emergencias` INT NOT NULL AUTO_INCREMENT,
+  `id_paramedico` INT NULL,
+  `id_hospital` INT NULL,
+  `situacao` TINYINT NULL,
+  `idade_paciente` VARCHAR(45) NULL,
+  `genero_paciente` VARCHAR(45) NULL,
+  `traumas` TEXT NULL,
+  `identificacao_paciente` TEXT NULL,
+  `id_gravidade` INT NULL,
+  PRIMARY KEY (`id_pedidos_emergencias`),
+  INDEX `fk_id_paramedico_ped_emergencia_idx` (`id_paramedico` ASC),
+  INDEX `fk_id_hospital_pedidos_emergencias_idx` (`id_hospital` ASC),
+  INDEX `fk_id_gravidade_pedidos_emergencias_idx` (`id_gravidade` ASC),
+  CONSTRAINT `fk_id_paramedico_ped_emergencia`
+    FOREIGN KEY (`id_paramedico`)
+    REFERENCES `db_fiesphack`.`tbl_usuarios_acesso` (`id_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_id_hospital_pedidos_emergencias`
+    FOREIGN KEY (`id_hospital`)
+    REFERENCES `db_fiesphack`.`tbl_hospitais` (`id_hospital`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_id_gravidade_pedidos_emergencias`
+    FOREIGN KEY (`id_gravidade`)
+    REFERENCES `db_fiesphack`.`tbl_gravidade` (`id_gravidade`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_farmacia`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_farmacia` (
+  `id_farmacia` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_farmacia`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_consultas_medicamentos`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_consultas_medicamentos` (
+  `id_consultas_medicamentos` INT NOT NULL,
+  `nome_paciente` VARCHAR(45) NULL,
+  `doc_paciente` VARCHAR(45) NULL,
+  `endereco_da_consulta` TEXT NULL,
+  `id_farmacia` VARCHAR(45) NULL,
+  `finalizado` TINYINT NULL,
+  `observacoes` TEXT NULL,
+  PRIMARY KEY (`id_consultas_medicamentos`),
+  INDEX `fk_id_farmacia_consultas_medicamentos_idx` (`id_farmacia` ASC),
+  CONSTRAINT `fk_id_farmacia_consultas_medicamentos`
+    FOREIGN KEY (`id_farmacia`)
+    REFERENCES `db_fiesphack`.`tbl_farmacia` (`id_farmacia`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_medicamentos`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_medicamentos` (
+  `id_medicamentos` INT NOT NULL AUTO_INCREMENT,
+  `nome_medicamento` VARCHAR(45) NULL,
+  PRIMARY KEY (`id_medicamentos`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_medicamentos_farmacia`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_medicamentos_farmacia` (
+  `id_medicamentos_farmacia` INT NOT NULL,
+  `id_medicamento` INT NULL,
+  `id_farmacia` VARCHAR(45) NULL,
+  `disponivel` TINYINT NULL,
+  PRIMARY KEY (`id_medicamentos_farmacia`),
+  INDEX `fk_medicamento_medicamentos_farmacia_idx` (`id_medicamento` ASC),
+  INDEX `fk_farmacia_medicamentos_farmacia_idx` (`id_farmacia` ASC),
+  CONSTRAINT `fk_medicamento_medicamentos_farmacia`
+    FOREIGN KEY (`id_medicamento`)
+    REFERENCES `db_fiesphack`.`tbl_medicamentos` (`id_medicamentos`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_farmacia_medicamentos_farmacia`
+    FOREIGN KEY (`id_farmacia`)
+    REFERENCES `db_fiesphack`.`tbl_farmacia` (`id_farmacia`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `db_fiesphack`.`tbl_medicamentos_consulta`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_fiesphack`.`tbl_medicamentos_consulta` (
+  `id_medicamentos_consulta` INT NOT NULL AUTO_INCREMENT,
+  `id_medicamentos` INT NULL,
+  `id_consulta` INT NULL,
+  PRIMARY KEY (`id_medicamentos_consulta`),
+  INDEX `fk_id_medicamento_medicamentos_consulta_idx` (`id_medicamentos` ASC),
+  INDEX `fk_id_consulta_medicamentos_consulta_idx` (`id_consulta` ASC),
+  CONSTRAINT `fk_id_medicamento_medicamentos_consulta`
+    FOREIGN KEY (`id_medicamentos`)
+    REFERENCES `db_fiesphack`.`tbl_medicamentos` (`id_medicamentos`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_id_consulta_medicamentos_consulta`
+    FOREIGN KEY (`id_consulta`)
+    REFERENCES `db_fiesphack`.`tbl_consultas_medicamentos` (`id_consultas_medicamentos`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
